@@ -119,19 +119,22 @@ def Samsung_AC_config(device_id, device_brand):
     pubhadhvac = "homeassistant/hvac/" + device_id
     powercmd = "climate/" + device_id + "/power"
     modecmd = "climate/" + device_id + "/mode"
-    tempcmd = "climate" + device_id + "/temp"
+    tempcmd = "climate/" + device_id + "/temp"
     fancmd = "climate/" + device_id + "/fan"
     swingcmd = "climate/" + device_id + "/swing"
 
-    fan_modes = ["Auto", "1", "2", "3"]
+    fan_modes = ["auto", "1", "2", "3"]
     max_temp = "30"
     min_temp = "16"
-    modes = ["Auto", "Heat", "Cool", "Dry", "Fan only"]
-    swing_modes = ["On", "Off"]
+    modes = ["auto", "heat", "cool", "dry", "fan only"]
+    swing_modes = ["on", "off"]
  
-    payload = {"name": name, "availability_topic": status, "power_command_topic": powercmd,
-    "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, "fan_mode_command_topic": fancmd, 
-    "swing_mode_command_topic": swingcmd, "mode": modes, "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
+    payload = {"name": name, "availability_topic": status, 
+    "power_command_topic": powercmd,
+    "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
+    "fan_mode_command_topic": fancmd, 
+    "swing_mode_command_topic": swingcmd, "modes": modes, 
+    "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
     "swing_modes": swing_modes}
 
     client.publish(pubhadhvac, payload = json.dumps(payload), retain = True)
@@ -142,19 +145,22 @@ def Sumikura_AC_config(device_id, device_brand):
     pubhadhvac = "homeassistant/hvac/" + device_id + "/config"
     powercmd = "climate/" + device_id + "/power"
     modecmd = "climate/" + device_id + "/mode"
-    tempcmd = "climate" + device_id + "/temp"
+    tempcmd = "climate/" + device_id + "/temp"
     fancmd = "climate/" + device_id + "/fan"
     swingcmd = "climate/" + device_id + "/swing"
 
-    fan_modes = ["Auto", "1", "2", "3"]
+    fan_modes = ["auto", "1", "2", "3"]
     max_temp = "30"
     min_temp = "16"
-    modes = ["Cool", "Heat", "Fan only"]
-    swing_modes = ["Auto", "1", "2", "3", "4", "5"]
+    modes = ["cool", "heat", "fan only"]
+    swing_modes = ["auto", "1", "2", "3", "4", "5"]
  
-    payload = {"name": name, "availability_topic": status, "power_command_topic": powercmd,
-    "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, "fan_mode_command_topic": fancmd, 
-    "swing_mode_command_topic": swingcmd, "mode": modes, "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
+    payload = {"name": name, "availability_topic": status, 
+    "power_command_topic": powercmd,
+    "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
+    "fan_mode_command_topic": fancmd, 
+    "swing_mode_command_topic": swingcmd, "modes": modes, 
+    "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
     "swing_modes": swing_modes}
 
     client.publish(pubhadhvac, payload = json.dumps(payload), retain = True)
