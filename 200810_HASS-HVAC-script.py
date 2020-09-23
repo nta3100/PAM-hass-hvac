@@ -139,7 +139,7 @@ def Samsung_AC_config(device_id, device_brand):
 def Sumikura_AC_config(device_id, device_brand):
     name = device_id + ": Dieu hoa " + device_brand
     status = "status/" + device_id
-    pubhadhvac = "homeassistant/hvac/" + device_id
+    pubhadhvac = "homeassistant/hvac/" + device_id + "/config"
     powercmd = "climate/" + device_id + "/power"
     modecmd = "climate/" + device_id + "/mode"
     tempcmd = "climate" + device_id + "/temp"
