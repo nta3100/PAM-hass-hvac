@@ -11,33 +11,33 @@ def encode_samsung(device):
     SAMSUNG_ZERO_SPACE_USER = "500"
     state = 1
 
-    if device.swing == "Off":
+    if device.swing == "off":
         _swing = 10
-    elif device.swing == "Swing":
+    elif device.swing == "swing":
         _swing = 15
     else: 
         _swing = 15
 
-    if device.mode == "Auto":
+    if device.mode == "auto":
         _mode = 0
-    elif device.mode == "Heat":
+    elif device.mode == "heat":
         _mode = 4
-    elif device.mode == "Cool":
+    elif device.mode == "cool":
         _mode = 1
-    elif device.mode == "Dry":
+    elif device.mode == "dry":
         _mode = 2
-    elif device.mode == "Fan only":
+    elif device.mode == "fan_only":
         _mode = 3
     else:
         _mode = 0
 
-    if device.fan == "Auto":
+    if device.fan == "auto":
         _fan = 0
-    elif device.fan == "Low":
+    elif device.fan == "low":
         _fan = 2
-    elif device.fan == "Medium":
+    elif device.fan == "medium":
         _fan = 4
-    elif device.fan == "High":
+    elif device.fan == "high":
         _fan = 5
     else:
         _fan = 0
@@ -49,7 +49,7 @@ def encode_samsung(device):
     _buff_on = AC_IR_python.hex_string_to_byte_array(samsung_template_on)
     _buff_off = AC_IR_python.hex_string_to_byte_array(samsung_template_off)
 
-    if (device.state == "Off"):
+    if (device.mode == "off"):
         switch_off(_buff_off)
         str_bin = AC_IR_python.byte_to_string(_buff_off, 0) 
         print(str_bin)

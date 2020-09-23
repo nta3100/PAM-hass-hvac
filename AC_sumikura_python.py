@@ -9,7 +9,7 @@ def encode_sumikura(device):
     SUMIKURA_ZERO_SPACE_USER = "520"
     state = 1
 
-    if device.swing == "Auto":
+    if device.swing == "auto":
         _swing = 26
     elif device.swing == "1":
         _swing = 6
@@ -24,16 +24,16 @@ def encode_sumikura(device):
     else:
         _swing = 26
 
-    if device.mode == "Cool":
+    if device.mode == "cool":
         _mode = 2
-    elif device.mode == "Heat":
+    elif device.mode == "heat":
         _mode = 3
-    elif device.mode == "Fan only":
+    elif device.mode == "fan_only":
         _mode = 5
     else: 
         _mode = 5
 
-    if device.fan == "Auto":
+    if device.fan == "auto":
         _fan = 0
     elif device.fan == "1":
         _fan = 2
@@ -48,7 +48,7 @@ def encode_sumikura(device):
     str_bin = ""
 
     _buff = AC_IR_python.hex_string_to_byte_array(Sumikura_template)
-    if device.state == "OFF":
+    if device.mode == "off":
         _buff = switch_off(_buff)
         _buff = change_mode(_buff, _mode)
         if (int)(device.temp) == 0:

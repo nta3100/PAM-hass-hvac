@@ -51,7 +51,7 @@ def overwrite_data():
 
 #Khi co thiet bi moi xuat hien trong mang
 def add_new_device(device_id):
-    devices.append(Hvac((str)(device_id), "None", "OFF", "Auto", "16", "Auto", "Auto"))
+    devices.append(Hvac((str)(device_id), "null", "off", "auto", "16", "auto", "auto"))
 
 def mqtt_decode(topic, payload):
     check_ = topic[0:5]
@@ -81,18 +81,16 @@ def mqtt_decode(topic, payload):
         change_in = topic[15:]
         for device in devices:
             if device.device_id == device_id:
-                if change_in == "power":
-                    device.state = payload.decode('utf-8')
-                elif change_in == "mode":
-                    device.mode = payload.decode('utf-8')
+                if change_in == "mode":
+                    device.mode = payload.decode('utf-8').lower()         
                 elif change_in == "temp":
                     _temp = payload.decode('utf-8')
                     if _temp.isnumeric():
-                        device.temp = payload.decode('utf-8')
+                        device.temp = payload.decode('utf-8').lower()
                 elif change_in == "fan":
-                    device.fan = payload.decode('utf-8')
+                    device.fan = payload.decode('utf-8').lower()
                 elif change_in == "swing":
-                    device.swing = payload.decode('utf-8')
+                    device.swing = payload.decode('utf-8').lower()
                 str_pub = ""
                 if device.brand == "Samsung":
                     str_pub = "/sa/" + AC_samsung_python.encode_samsung(device) + ",msg_id,1,1"
@@ -114,23 +112,21 @@ def mqtt_decode(topic, payload):
     overwrite_data()
 
 def Samsung_AC_config(device_id, device_brand):
-    name = device_id + ": Dieu hoa " + device_brand
+    name = "Dieu khien dieu hoa: " + device_id
     status = "status/" + device_id
-    pubhadhvac = "homeassistant/climate/" + device_id
-    powercmd = "climate/" + device_id + "/power"
+    pubhadhvac = "homeassistant/climate/" + device_id + "/config"
     modecmd = "climate/" + device_id + "/mode"
     tempcmd = "climate/" + device_id + "/temp"
     fancmd = "climate/" + device_id + "/fan"
     swingcmd = "climate/" + device_id + "/swing"
 
-    fan_modes = ["auto", "1", "2", "3"]
+    fan_modes = ["Auto", "1", "2", "3"]
     max_temp = "30"
     min_temp = "16"
-    modes = ["auto", "heat", "cool", "dry", "fan only"]
-    swing_modes = ["on", "off"]
+    modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+    swing_modes = ["On", "Off"]
  
     payload = {"name": name, "availability_topic": status, 
-    "power_command_topic": powercmd,
     "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
     "fan_mode_command_topic": fancmd, 
     "swing_mode_command_topic": swingcmd, "modes": modes, 
@@ -140,23 +136,21 @@ def Samsung_AC_config(device_id, device_brand):
     client.publish(pubhadhvac, payload = json.dumps(payload), retain = True)
 
 def Sumikura_AC_config(device_id, device_brand):
-    name = device_id + ": Dieu hoa " + device_brand
+    name = "Dieu khien dieu hoa: " + device_id
     status = "status/" + device_id
     pubhadhvac = "homeassistant/climate/" + device_id + "/config"
-    powercmd = "climate/" + device_id + "/power"
     modecmd = "climate/" + device_id + "/mode"
     tempcmd = "climate/" + device_id + "/temp"
     fancmd = "climate/" + device_id + "/fan"
     swingcmd = "climate/" + device_id + "/swing"
 
-    fan_modes = ["auto", "1", "2", "3"]
+    fan_modes = ["Auto", "1", "2", "3"]
     max_temp = "30"
     min_temp = "16"
-    modes = ["cool", "heat", "fan only"]
-    swing_modes = ["auto", "1", "2", "3", "4", "5"]
+    modes = ["off", "cool", "heat", "fan_only"]
+    swing_modes = ["Auto", "1", "2", "3", "4", "5"]
  
     payload = {"name": name, "availability_topic": status, 
-    "power_command_topic": powercmd,
     "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
     "fan_mode_command_topic": fancmd, 
     "swing_mode_command_topic": swingcmd, "modes": modes, 
