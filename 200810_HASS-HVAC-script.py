@@ -5,7 +5,7 @@ import AC_samsung_python
 import AC_sumikura_python
 import json
 
-mqtt_server = "192.168.12.43"
+mqtt_server = "192.168.11.86"
 mqtt_port = 1883
 user = "nta_mqtt"
 pwd = "123"
