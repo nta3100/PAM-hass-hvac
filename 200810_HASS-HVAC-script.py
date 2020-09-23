@@ -5,7 +5,13 @@ import AC_samsung_python
 import AC_sumikura_python
 import json
 
+mqtt_server = "192.168.12.43"
+mqtt_port = 1883
+user = "nta_mqtt"
+pwd = "123"
+
 print("Starting")
+
 class Hvac:
     def __init__(self, device_id, brand, state, mode, temp, fan, swing):
         self.device_id = device_id
@@ -163,10 +169,11 @@ def on_message(client, userdata, msg):
     mqtt_decode(msg.topic, msg.payload)
 
 client = mqtt.Client()
+client.username_pw_set(user, pwd)
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("broker.hivemq.com", 1883, 60)
+client.connect(mqtt_server, mqtt_port, 60)
 client.publish("nta3100", "Hello", 0)
 read_old_data()
 overwrite_data()
