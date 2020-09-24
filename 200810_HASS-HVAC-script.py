@@ -85,8 +85,8 @@ def mqtt_decode(topic, payload):
                     device.mode = payload.decode('utf-8').lower()         
                 elif change_in == "temp":
                     _temp = payload.decode('utf-8')
-                    if _temp.isnumeric():
-                        device.temp = payload.decode('utf-8').lower()
+                    if _temp.replace('.','',1).isdigit():
+                        device.temp = str(int(float(payload.decode('utf-8'))))
                 elif change_in == "fan":
                     device.fan = payload.decode('utf-8').lower()
                 elif change_in == "swing":
