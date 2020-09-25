@@ -31,7 +31,7 @@ def encode_sumikura(device):
     elif device.mode == "fan_only":
         _mode = 5
     else: 
-        _mode = 5
+        _mode = 2
 
     if device.fan == "auto":
         _fan = 0
@@ -57,8 +57,8 @@ def encode_sumikura(device):
             _buff = temp_up(_buff)
         elif (int)(device.temp) == 2:
             pass
-        elif ((int)(device.temp) > 15) and ((int)(device.temp) < 33):
-            _buff = change_temp(_buff, (int)(device.temp))
+        elif (int(device.temp) > 15) and (int(device.temp) < 33):
+            _buff = change_temp(_buff, int(device.temp))
         else:
             pass
         _buff = change_fan(_buff, _fan)
