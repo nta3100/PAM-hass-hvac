@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import AC_IR_python
 import AC_samsung_python
 import AC_sumikura_python
+import AC_daikin1_python
 import json
 
 mqtt_server = "192.168.11.86"
