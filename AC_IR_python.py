@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import gzip
 import base64
 #IR_AC.java

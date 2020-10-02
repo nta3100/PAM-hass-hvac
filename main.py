@@ -1,4 +1,5 @@
-#Luu y: thong so cac ban tin
+#! /usr/bin/python3
+
 import paho.mqtt.client as mqtt
 import AC_IR_python
 import AC_samsung_python
@@ -25,7 +26,7 @@ class Hvac:
 devices = []
 #Doc du lieu luu tru trong file hvac_data
 def read_old_data():
-    with open("hvac_data.txt", 'r') as f:
+    with open("/home/nta/hass-hvac/hvac_data.txt", 'r') as f:
         while True:
             device_id = f.readline().rstrip("\n")
             brand = f.readline().rstrip("\n")
@@ -40,7 +41,7 @@ def read_old_data():
 
 #Ghi du lieu (overwrite) file hvac_data
 def overwrite_data():
-    with open("hvac_data.txt", 'w') as f:
+    with open("/home/nta/hass-hvac/hvac_data.txt", 'w') as f:
         for device in devices:
             f.write(str(device.device_id) + "\n")
             f.write(str(device.brand) + "\n")

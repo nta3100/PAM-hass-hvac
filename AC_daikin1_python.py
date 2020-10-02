@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import AC_IR_python
 
 def encode_daikin1(device):
