@@ -156,6 +156,69 @@ def mqtt_decode(topic, payload):
             add_new_device(device_id)
     overwrite_data()
 
+def new_config(device_id, device_brand):
+    name = "Dieu khien dieu hoa: " + device_id
+    status = "status/" + device_id
+    hass_mqtt_topic = "homeassistant/climate/" + device_id + "/config"
+    modecmd = "climate/" + device_id + "/mode"
+    tempcmd = "climate/" + device_id + "/temp"
+    fancmd = "climate/" + device_id + "/fan"
+    swingcmd = "climate/" + device_id + "/swing"
+
+    if device_brand == "samsung":
+        fan_modes = ["Auto", "1", "2", "3"]
+        max_temp = "30"
+        min_temp = "16"
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        swing_modes = ["On", "Off"]
+ 
+        payload = {"name": name, "availability_topic": status, 
+        "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
+        "fan_mode_command_topic": fancmd, 
+        "swing_mode_command_topic": swingcmd, "modes": modes, 
+        "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
+        "swing_modes": swing_modes}
+    elif device_brand == "sumikura":
+        fan_modes = ["Auto", "1", "2", "3"]
+        max_temp = "30"
+        min_temp = "16"
+        modes = ["off", "cool", "heat", "fan_only"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
+ 
+        payload = {"name": name, "availability_topic": status, 
+        "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
+        "fan_mode_command_topic": fancmd, 
+        "swing_mode_command_topic": swingcmd, "modes": modes, 
+        "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
+        "swing_modes": swing_modes}
+    elif device_brand == "asanzo":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "32"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
+    elif device_brand == "daikin1":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "32"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
+    elif device_brand == "daikin2":
+    elif device_brand == "funiki":
+    elif device_brand == "funiki2":
+    elif device_brand == "general":
+    elif device_brand == "gree":
+    elif device_brand == "lg":
+    elif device_brand == "midea":
+    elif device_brand == "mitsubishi":
+    elif device_brand == "nagakawa":
+    elif device_brand == "panasonic":
+    elif device_brand == "sharp":
+    client.publish(hass_mqtt_topic, payload = json.dumps(payload), retain = True)
+
+
+
+
 def Samsung_AC_config(device_id, device_brand):
     name = "Dieu khien dieu hoa: " + device_id
     status = "status/" + device_id
