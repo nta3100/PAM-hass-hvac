@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-import AC_IR_python
+import AC_IR
 
 def encode_daikin1(device):
     Daikin_template = "885BE40F0000004011DA2700003130007F000000000000C00000B2"
@@ -10,13 +10,12 @@ def encode_daikin1(device):
     DAIKIN_ONE_SPACE_USER = "1300"
     DAIKIN_ZERO_SPACE_USER = "460"
 
-
     if device.swing == 0:
         _swing = 15
     elif device.swing == 1:
         _swing = 0
     else:
-        pass
+        _swing = 15
 
     if device.mode == 0:
         _mode = 0
@@ -29,7 +28,7 @@ def encode_daikin1(device):
     elif device.mode == 4:
         _mode = 6
     else:
-        pass
+        _mode = 0
 
     if device.fan == 0:
         _fan = 10
@@ -44,9 +43,9 @@ def encode_daikin1(device):
     elif device.fan == 5:
         _fan = 7
     else:
-        pass
+        _fan = 10
 
-    _buff = AC_IR_python.hex_string_to_byte_array(Daikin_template)
+    _buff = AC_IR.hex_string_to_byte_array(Daikin_template)
 
     if device.mode == "off":
         _buff = switch_off(_buff)
@@ -81,10 +80,47 @@ def encode_daikin1(device):
     cs = check_sum(_buff, 8, 26)
     str_raw = ""
     str_bin = ""
-    
+    for i in range(0, 8):
+        str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 1)
+    for i in range(8, len(_buff)):
+        str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
+    str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0)
 
-
-
+    str_raw += DAIKIN_HDR_MARK_USER
+    str_raw += ','
+    str_raw += DAIKIN_HDR_SPACE_USER
+    str_raw += ','
+    for i in range(0, 8*8):
+        str_raw += DAIKIN_BIT_MARK_USER
+        str_raw += ','
+        if str_bin[i] == '1':
+            str_raw += DAIKIN_ONE_SPACE_USER
+            str_raw += ','
+        else:
+            str_raw += DAIKIN_ZERO_SPACE_USER
+            str_raw += ','
+    str_raw += DAIKIN_BIT_MARK_USER
+    str_raw += ','
+    str_raw += "29500"
+    str_raw += ','
+    str_raw += DAIKIN_HDR_MARK_USER
+    str_raw += ','
+    str_raw += DAIKIN_HDR_SPACE_USER
+    str_raw += ','
+    for i in range(8*8, 27*8):
+        str_raw += DAIKIN_BIT_MARK_USER
+        str_raw += ','
+        if str_bin[i] == '1':
+            str_raw += DAIKIN_ONE_SPACE_USER
+            str_raw += ','
+        else:
+            str_raw += DAIKIN_ZERO_SPACE_USER
+            str_raw += ','
+    str_raw += DAIKIN_BIT_MARK_USER
+    str_raw += ','
+    str_raw += "0"
+    str_raw = AC_IR.gz_base64_compress(str_raw)
+    return str_raw
 
 def switch_off(_buff):
     _buff[13] = _buff[13] & 0xf0
@@ -128,8 +164,8 @@ def read_temp(_buff):
     _temp.append((_buff[14] >> 4) & 0x01)
     _temp.append((_buff[14] >> 5) & 0x01)
     _temp.append((_buff[14] >> 6) & 0x01)
-    temp = AC_IR_python.bit_to_int(_temp, 6, 0)
-    return AC_IR_python.bit_to_int(_temp, 6, 0)
+    temp = AC_IR.bit_to_int(_temp, 6, 0)
+    return AC_IR.bit_to_int(_temp, 6, 0)
 
 def change_fan(_buff, _fan):
     if _fan == 10:
@@ -161,7 +197,7 @@ def read_fan(_buff):
     _fan.append((_buff[16] >> 6) & 0x01)
     _fan.append((_buff[16] >> 7) & 0x01)
 
-    fan = AC_IR_python.bit_to_int(_fan, 4, 0)
+    fan = AC_IR.bit_to_int(_fan, 4, 0)
     return fan
 
 def change_swing(_buff, _swing):
@@ -199,7 +235,7 @@ def read_fan(_buff):
     _fan.append((_buff[16] << 5) & 0x01)
     _fan.append((_buff[16] << 6) & 0x01)
     _fan.append((_buff[16] << 7) & 0x01)
-    fan = AC_IR_python.bit_to_int(_fan, 4, 0)
+    fan = AC_IR.bit_to_int(_fan, 4, 0)
     return fan
 
 def change_swing(_buff, _swing):
@@ -218,7 +254,7 @@ def read_swing(_buff):
     _swing.append((_buff[16] >> 1) & 0x01)
     _swing.append((_buff[16] >> 2) & 0x01)
     _swing.append((_buff[16] >> 3) & 0x01)
-    swing = AC_IR_python.bit_to_int(_swing, 4, 0)
+    swing = AC_IR.bit_to_int(_swing, 4, 0)
     return swing
 
 def change_mode(_buff, _mode):
@@ -246,7 +282,7 @@ def read_mode(_buff):
     _mode.append((_buff[13] >> 5) & 0x01)
     _mode.append((_buff[13] >> 6) & 0x01)
     _mode.append((_buff[13] >> 7) & 0x01)
-    mode = AC_IR_python.bit_to_int(_mode, 4, 0)
+    mode = AC_IR.bit_to_int(_mode, 4, 0)
     return mode
 
 def check_sum(_buf, _add_start, _len):

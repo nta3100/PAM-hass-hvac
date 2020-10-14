@@ -1,4 +1,4 @@
-import AC_IR_python
+import AC_IR
 
 def encode_samsung(device): 
     samsung_template = "02920F000000F001D2FE718019F001C2FE71C015F0"
@@ -45,13 +45,13 @@ def encode_samsung(device):
     str_raw = ""
     str_bin = ""
 
-    _buff_header = AC_IR_python.hex_string_to_byte_array(samsung_template)
-    _buff_on = AC_IR_python.hex_string_to_byte_array(samsung_template_on)
-    _buff_off = AC_IR_python.hex_string_to_byte_array(samsung_template_off)
+    _buff_header = AC_IR.hex_string_to_byte_array(samsung_template)
+    _buff_on = AC_IR.hex_string_to_byte_array(samsung_template_on)
+    _buff_off = AC_IR.hex_string_to_byte_array(samsung_template_off)
 
     if (device.mode == "off"):
         switch_off(_buff_off)
-        str_bin = AC_IR_python.byte_to_string(_buff_off, 0) 
+        str_bin = AC_IR.byte_to_string(_buff_off, 0) 
         print(str_bin)
         str_raw += SAMSUNG_HDR_MARK_USER
         str_raw += ','
@@ -133,7 +133,7 @@ def encode_samsung(device):
         checksum << 4
         checksum |= 0x02
         _buff_on[8] = checksum
-        str_bin = AC_IR_python.byte_to_string(_buff_on, 0)
+        str_bin = AC_IR.byte_to_string(_buff_on, 0)
         str_raw += SAMSUNG_HDR_MARK_USER
         str_raw += ','
         str_raw += SAMSUNG_HDR_SPACE_USER
@@ -184,7 +184,7 @@ def encode_samsung(device):
         str_raw += SAMSUNG_BIT_MARK_USER
         str_raw += ','
         str_raw += "0"
-    str_raw = AC_IR_python.gz_base64_compress(str_raw)
+    str_raw = AC_IR.gz_base64_compress(str_raw)
     return str_raw
 #AC_Samsung.java
 def switch_on(_buff):
@@ -199,7 +199,7 @@ def read_temp(_buff):
     _temp.append((int)((_buff[11] >> 5) & 0x01))
     _temp.append((int)((_buff[11] >> 6) & 0x01))
     _temp.append((int)((_buff[11] >> 7) & 0x01))
-    temp = 16 + AC_IR_python.bit_to_int(_temp, 4, 0)
+    temp = 16 + AC_IR.bit_to_int(_temp, 4, 0)
     #print(temp)
     return temp
 
@@ -247,7 +247,7 @@ def read_fan(_buff):
     _fan.append(int((_buff[12] >> 1) & 0x01))
     _fan.append(int((_buff[12] >> 2) & 0x01))
     _fan.append(int((_buff[12] >> 3) & 0x01))
-    fan = AC_IR_python.bit_to_int(_fan, 3, 0)
+    fan = AC_IR.bit_to_int(_fan, 3, 0)
     return fan
 
 def change_swing(_buff, _swing):
@@ -265,7 +265,7 @@ def read_swing(_buff):
     _swing.append((int)((_buff[9] >> 5) & 0x01))
     _swing.append((int)((_buff[9] >> 6) & 0x01))
     _swing.append((int)((_buff[9] >> 7) & 0x01))
-    swing = AC_IR_python.bit_to_int(_swing, 4, 0)
+    swing = AC_IR.bit_to_int(_swing, 4, 0)
     return swing
 
 def change_mode(_buff, _mode):
@@ -291,5 +291,5 @@ def read_mode(_buff):
     _mode.append((int)(_buff[12] >> 4) & 0x01)
     _mode.append((int)(_buff[12] >> 5) & 0x01)
     _mode.append((int)(_buff[12] >> 6) & 0x01)
-    mode = AC_IR_python.bit_to_int(_mode, 3, 0)
+    mode = AC_IR.bit_to_int(_mode, 3, 0)
     return mode

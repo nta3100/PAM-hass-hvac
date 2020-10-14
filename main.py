@@ -1,16 +1,31 @@
 #! /usr/bin/python3
 
 import paho.mqtt.client as mqtt
-import AC_IR_python
-import AC_samsung_python
-import AC_sumikura_python
-import AC_daikin1_python
+import AC_IR
+import AC_Sumikura
+import AC_Samsung
+import AC_Daikin_1
+import AC_Daikin_2
+import AC_Funiki
+import AC_Funiki_2
+import AC_General
+import AC_Gree
+import AC_Asanzo
+import AC_LG
+import AC_Midea
+import AC_Mitsubishi
+import AC_Nagakawa
+import AC_Panasonic
+import AC_Sharp
 import json
 
-mqtt_server = "192.168.11.86"
+#mqtt_server = "192.168.11.86"
+#mqtt_port = 1883
+#user = "nta_mqtt"
+#pwd = "123"
+
+mqtt_server = "broker.hivemq.com"
 mqtt_port = 1883
-user = "nta_mqtt"
-pwd = "123"
 
 print("Starting")
 
@@ -26,7 +41,8 @@ class Hvac:
 devices = []
 #Doc du lieu luu tru trong file hvac_data
 def read_old_data():
-    with open("/home/nta/hass-hvac/hvac_data.txt", 'r') as f:
+    #upload: /home/nta/hass-hvac/hvac_data.txt
+    with open("hvac_data.txt", 'r') as f:
         while True:
             device_id = f.readline().rstrip("\n")
             brand = f.readline().rstrip("\n")
@@ -41,7 +57,8 @@ def read_old_data():
 
 #Ghi du lieu (overwrite) file hvac_data
 def overwrite_data():
-    with open("/home/nta/hass-hvac/hvac_data.txt", 'w') as f:
+    #upload: /home/nta/hass-hvac/hvac_data.txt
+    with open("hvac_data.txt", 'w') as f:
         for device in devices:
             f.write(str(device.device_id) + "\n")
             f.write(str(device.brand) + "\n")
@@ -64,13 +81,13 @@ def mqtt_decode(topic, payload):
         new_brand = payload[7:]
         for device in devices:
             if device_id.decode('utf-8') == device.device_id:
-                device.brand = new_brand.decode('utf-8')
-                if(new_brand.decode('utf-8') == "Samsung"):
+                device.brand = new_brand.decode('utf-8').lower()
+                if new_brand.decode('utf-8') == "Samsung":
                     Samsung_AC_config(device.device_id, device.brand)
                     device.mode = "Auto"
                     device.fan = "Auto"
                     device.swing = "On"
-                elif(new_brand.decode('utf-8') == "Sumikura"):
+                elif new_brand.decode('utf-8') == "Sumikura":
                     Sumikura_AC_config(device.device_id, device.brand)
                     device.mode = "Cool"
                     device.fan = "Auto"
@@ -94,10 +111,36 @@ def mqtt_decode(topic, payload):
                 elif change_in == "swing":
                     device.swing = payload.decode('utf-8').lower()
                 str_pub = ""
-                if device.brand == "Samsung":
-                    str_pub = "/sa/" + AC_samsung_python.encode_samsung(device) + ",msg_id,1,1"
-                elif device.brand == "Sumikura":
-                    str_pub = "/sa/" + AC_sumikura_python.encode_sumikura(device) + ",msg_id,1,1"
+                if device.brand == "samsung":
+                    str_pub = "/sa/" + AC_Samsung.encode_samsung(device) + ",msg_id,1,1"
+                elif device.brand == "sumikura":
+                    str_pub = "/sa/" + AC_Sumikura.encode_sumikura(device) + ",msg_id,1,1"
+                elif device.brand == "daikin1":
+                    str_pub = "/sa/" + AC_Daikin_1.encode_daikin1(device) + ",msg_id,1,1"
+                elif device.brand == "asanzo":
+                    str_pub = "/sa/" + AC_Asanzo.encode_asanzo(device) + ",msg_id,1,1"
+                elif device.brand == "daikin2":
+                    str_pub = "/sa/" + AC_Daikin_2.encode_daikin_2(device) + ",msg_id,1,1"
+                elif device.brand == "funiki2":
+                    str_pub = "/sa/" + AC_Funiki_2.encode_funiki2(device) + ",msg_id,1,1"
+                elif device.brand == "funiki":
+                    str_pub = "/sa/" + AC_Funiki.encode_funiki(device) + ",msg_id,1,1"
+                elif device.brand == "general":
+                    str_pub = "/sa/" + AC_General.encode_general(device) + ",msg_id,1,1"
+                elif device.brand == "gree":
+                    str_pub = "/sa/" + AC_Gree.encode_gree(device) + ",msg_id,1,1"
+                elif device.brand == "lg":
+                    str_pub = "/sa/" + AC_LG.encode_lg(device) + ",msg_id,1,1"
+                elif device.brand == "midea":
+                    str_pub = "/sa/" + AC_Midea.encode_midea(device) + ",msg_id,1,1"
+                elif device.brand == "mitsubishi":
+                    str_pub = "/sa/" + AC_Mitsubishi.encode_mitsubishi(device) + ",msg_id,1,1"
+                elif device.brand == "nagakawa":
+                    str_pub = "/sa/" + AC_Nagakawa.encode_nagakawa(device) + ",msg_id,1,1"
+                elif device.brand == "panasonic":
+                    str_pub = "/sa/" + AC_Panasonic.encode_panasonic(device) + ",msg_id,1,1"
+                elif device.brand == "sharp":
+                    str_pub = "/sa/" + AC_Sharp.encode_sharp(device) + ",msg_id,1,1"
                 out_topic = "cmd/" + device_id
                 client.publish(out_topic, str_pub)
                 break
@@ -171,7 +214,7 @@ def on_message(client, userdata, msg):
     mqtt_decode(msg.topic, msg.payload)
 
 client = mqtt.Client()
-client.username_pw_set(user, pwd)
+#client.username_pw_set(user, pwd)
 client.on_connect = on_connect
 client.on_message = on_message
 

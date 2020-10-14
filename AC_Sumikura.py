@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-import AC_IR_python
+import AC_IR
 
 def encode_sumikura(device):
     Sumikura_template = "56740000210600000C000C2529114B"
@@ -49,7 +49,7 @@ def encode_sumikura(device):
     str_raw = ""
     str_bin = ""
 
-    _buff = AC_IR_python.hex_string_to_byte_array(Sumikura_template)
+    _buff = AC_IR.hex_string_to_byte_array(Sumikura_template)
     if device.mode == "off":
         _buff = switch_off(_buff)
         _buff = change_mode(_buff, _mode)
@@ -83,8 +83,8 @@ def encode_sumikura(device):
     cs = check_sum(_buff, 0, len(_buff) - 1)
     _buff_temp = _buff
     _buff_temp.pop(len(_buff) - 1)
-    str_bin = AC_IR_python.byte_to_string(_buff_temp, 0)
-    str_bin += AC_IR_python.byte_to_string(cs.to_bytes(1, 'big'), 0)
+    str_bin = AC_IR.byte_to_string(_buff_temp, 0)
+    str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0)
     str_raw += SUMIKURA_HDR_MARK_USER
     str_raw += ','
     str_raw += SUMIKURA_HDR_SPACE_USER
@@ -101,7 +101,7 @@ def encode_sumikura(device):
     str_raw += SUMIKURA_BIT_MARK_USER
     str_raw += ','
     str_raw += "0"
-    str_raw = AC_IR_python.gz_base64_compress(str_raw)
+    str_raw = AC_IR.gz_base64_compress(str_raw)
     return str_raw
 
 def switch_off(_buff):
@@ -148,7 +148,7 @@ def read_temp(_buff):
     _temp[2] = (int)((_buff[16] >> 3) & 0x01)
     _temp[3] = (int)((_buff[16] >> 4) & 0x01)
     _temp[4] = (int)((_buff[16] >> 5) & 0x01)
-    temp = AC_IR_python.bit_to_int(_temp, 5, 0)
+    temp = AC_IR.bit_to_int(_temp, 5, 0)
     temp = temp + 10
     return temp
 
@@ -175,7 +175,7 @@ def read_fan(_buff):
     _fan[1] = (int)((_buff[17] >> 1) & 0x01)
     _fan[2] = (int)((_buff[17] >> 2) & 0x01)
     _fan[3] = (int)((_buff[17] >> 3) & 0x01)
-    fan = AC_IR_python.bit_to_int(_fan, 4, 0)
+    fan = AC_IR.bit_to_int(_fan, 4, 0)
     return fan
 
 def change_swing(_buff, _swing):
@@ -207,7 +207,7 @@ def read_swing(_buff):
     _swing[1] = (int)((_buff[13] >> 5) & 0x01)
     _swing[2] = (int)((_buff[13] >> 6) & 0x01)
     _swing[3] = (int)((_buff[13] >> 7) & 0x01)
-    swing = AC_IR_python.bit_to_int(_swing, 4, 0)
+    swing = AC_IR.bit_to_int(_swing, 4, 0)
     return swing
 
 def change_mode(_buff, _mode):
@@ -227,7 +227,7 @@ def read_mode(_buff):
     _mode[0] = ((_buff[12] >> 4) & 0x01)
     _mode[1] = ((_buff[12] >> 5) & 0x01)
     _mode[2] = ((_buff[12] >> 6) & 0x01)
-    mode = AC_IR_python.bit_to_int(_mode, 3, 0)
+    mode = AC_IR.bit_to_int(_mode, 3, 0)
     return mode
 
 def check_sum(_buf, _add_start, _len):
