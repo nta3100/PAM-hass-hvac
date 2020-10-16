@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_mitsubishi(device):
@@ -16,28 +14,41 @@ def encode_mitsubishi(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _mode == 0:
+    if _mode == "cool":
         _mode = 8
-    elif _mode == 2:
+    elif _mode == "heat":
         _mode = 3
-    elif _mode == 3:
+    elif _mode == "auto":
         _mode = 2
-    elif _mode == 4:
+    elif _mode == "dry":
         _mode = 7
     else: 
         _mode = 8
     
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 0
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 2
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 3
-    elif _fan == 3:
+    elif _fan == "3":
         _fan = 5
     else:
         _fan = 0
     
+    if _swing == "auto":
+        _swing = 0
+    elif _swing == "1":
+        _swing = 1
+    elif _swing == "2":
+        _swing = 2
+    elif _swing == "3":
+        _swing = 3
+    elif _swing == "4":
+        _swing = 4
+    elif _swing == "5":
+        _swing = 5
+
     _buff = AC_IR.hex_string_to_byte_array(Mitsubishi_template)
     if device.mode == "off":
         _buff = switch_off(_buff)

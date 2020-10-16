@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_gree(device):
@@ -15,33 +13,33 @@ def encode_gree(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _swing == 0:
+    if _swing == "on":
         _swing = 4
-    elif _swing == 1:
+    elif _swing == "off":
         _swing = 0
     else:
         _mode = 0
 
-    if _mode == 0:
+    if _mode == "auto":
         _mode = 0
-    elif _mode == 1:
+    elif _mode == "cool":
         _mode = 4
-    elif _mode == 2:
+    elif _mode == "dry":
         _mode = 1
-    elif _mode == 3:
+    elif _mode == "fan":
         _mode = 2
-    elif _mode == 4:
+    elif _mode == "heat":
         _mode = 3
     else:
         _mode = 0
 
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 0
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 1
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 2
-    elif _fan == 3:
+    elif _fan == "3":
         _fan = 3
     else:
         _fan = 0
@@ -110,6 +108,8 @@ def encode_gree(device):
     str_raw += GREE_BIT_MARK_USER
     str_raw += ','
     str_raw += "0"
+    str_raw = AC_IR.gz_base64_compress(str_raw)
+    return str_raw
 
 def switch_off(_buff):
     _buff[0] = _buff[0] & 0xf7
@@ -172,6 +172,7 @@ def change_fan(_buff, _fan):
         _buff[0] = _buff[0] | 0x30
     else:
         pass
+    return _buff
 
 def read_fan(_buff):
     _fan = [None]*2
@@ -189,7 +190,8 @@ def change_swing(_buff, _swing):
         _buff[0] = _buff[0] | 0x00
     else:
         pass
-
+    return _buff
+    
 def read_swing(_buff):
     _swing = [None]
     _swing[0] = (_buff[0] >> 6) & 0x01
@@ -213,6 +215,7 @@ def change_mode(_buff, _mode):
         _buff[0] = _buff[0] | 0x03
     else:
         pass
+    return _buff
 
 def read_mode(_buff):
     _mode = [None] * 3

@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_lg(device):
@@ -18,22 +16,22 @@ def encode_lg(device):
     _fan = device.fan
     _mode = device.mode
     
-    if _mode == 1:
+    if _mode == "cool":
         _mode = 4
-    elif _mode == 2:
+    elif _mode == "auto":
         _mode = 0
-    elif _mode == 3:
+    elif _mode == "dry":
         _mode = 1
     else:
         _mode = 4
     
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 5
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 0
-    elif _fan == 2:
+    elif _fan == "3":
         _fan = 2
-    elif _fan == 3:
+    elif _fan == "2":
         _fan = 4
     else:
         _fan = 5
@@ -74,8 +72,8 @@ def encode_lg(device):
     str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 1)
     
     _str = ""
-    _str += str_bin[0, len(str_bin) - 8]
-    _str += str_bin[len(str_bin) - 4, len(str_bin)]
+    _str += str_bin[0: len(str_bin) - 8]
+    _str += str_bin[len(str_bin) - 4: len(str_bin)]
     str_bin = _str
     
     str_raw += LG_HDR_MARK_USER
@@ -126,7 +124,7 @@ def temp_down(_buff):
 
 def change_temp(_buff, _temp):
     _temp = _temp - 15
-    __temp = __temp
+    __temp = _temp
     _buff[2] = _buff[2] & 0x0f
     _buff[2] = _buff[2] | (__temp << 4)
     return _buff

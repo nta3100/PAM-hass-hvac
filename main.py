@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import paho.mqtt.client as mqtt
 import AC_IR
 import AC_Sumikura
@@ -141,7 +139,10 @@ def mqtt_decode(topic, payload):
                     str_pub = "/sa/" + AC_Panasonic.encode_panasonic(device) + ",msg_id,1,1"
                 elif device.brand == "sharp":
                     str_pub = "/sa/" + AC_Sharp.encode_sharp(device) + ",msg_id,1,1"
-                out_topic = "cmd/" + device_id
+                out_topic = "cmd/" + device.device_id
+                if __debug__:
+                    print(str_pub)
+                    print(out_topic)
                 client.publish(out_topic, str_pub)
                 break
     elif check_ == "hvac/":
@@ -160,43 +161,30 @@ def new_config(device_id, device_brand):
     name = "Dieu khien dieu hoa: " + device_id
     status = "status/" + device_id
     hass_mqtt_topic = "homeassistant/climate/" + device_id + "/config"
-    modecmd = "climate/" + device_id + "/mode"
-    tempcmd = "climate/" + device_id + "/temp"
-    fancmd = "climate/" + device_id + "/fan"
-    swingcmd = "climate/" + device_id + "/swing"
+    mode_cmd = "climate/" + device_id + "/mode"
+    temp_cmd = "climate/" + device_id + "/temp"
+    fan_cmd = "climate/" + device_id + "/fan"
+    swing_cmd = "climate/" + device_id + "/swing"
 
     if device_brand == "samsung":
-        fan_modes = ["Auto", "1", "2", "3"]
-        max_temp = "30"
-        min_temp = "16"
         modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
-        swing_modes = ["On", "Off"]
- 
-        payload = {"name": name, "availability_topic": status, 
-        "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
-        "fan_mode_command_topic": fancmd, 
-        "swing_mode_command_topic": swingcmd, "modes": modes, 
-        "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
-        "swing_modes": swing_modes}
-    elif device_brand == "sumikura":
-        fan_modes = ["Auto", "1", "2", "3"]
         max_temp = "30"
         min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["On", "Off"]
+    elif device_brand == "sumikura":
         modes = ["off", "cool", "heat", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
         swing_modes = ["Auto", "1", "2", "3", "4", "5"]
- 
-        payload = {"name": name, "availability_topic": status, 
-        "mode_command_topic": modecmd, "temperature_command_topic": tempcmd, 
-        "fan_mode_command_topic": fancmd, 
-        "swing_mode_command_topic": swingcmd, "modes": modes, 
-        "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
-        "swing_modes": swing_modes}
     elif device_brand == "asanzo":
         modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
         max_temp = "32"
         min_temp = "16"
         fan_modes = ["Auto", "1", "2", "3"]
         swing_modes = ["Auto", "1", "2", "3", "4", "5"]
+
     elif device_brand == "daikin1":
         modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
         max_temp = "32"
@@ -204,19 +192,80 @@ def new_config(device_id, device_brand):
         fan_modes = ["Auto", "1", "2", "3"]
         swing_modes = ["Auto", "1", "2", "3", "4", "5"]
     elif device_brand == "daikin2":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "32"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3", "4", "5"]
+        swing_modes = ["On", "Off"]
     elif device_brand == "funiki":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "31"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
     elif device_brand == "funiki2":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "31"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
     elif device_brand == "general":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "17"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Set", "Swing"]
     elif device_brand == "gree":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["On", "Off"]
     elif device_brand == "lg":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Swing"]
     elif device_brand == "midea":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "17"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Swing", "Set"]
     elif device_brand == "mitsubishi":
+        modes = ["off", "auto", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
     elif device_brand == "nagakawa":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3", "4", "5"]
+        swing_modes = ["On", "Off"]
     elif device_brand == "panasonic":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "30"
+        min_temp = "16"
+        fan_modes = ["Auto", "1", "2", "3", "4", "5"]
+        swing_modes = ["Auto", "1", "2", "3", "4", "5"]
     elif device_brand == "sharp":
+        modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
+        max_temp = "32"
+        min_temp = "18"
+        fan_modes = ["Auto", "1", "2", "3"]
+        swing_modes = ["Swing"]
+
+    payload = {"name": name, "availability_topic": status, 
+        "mode_command_topic": mode_cmd, "temperature_command_topic": temp_cmd, 
+        "fan_mode_command_topic": fan_cmd, 
+        "swing_mode_command_topic": swing_cmd, "modes": modes, 
+        "fan_modes": fan_modes, "max_temp": max_temp, "min_temp": min_temp, 
+        "swing_modes": swing_modes}
+
     client.publish(hass_mqtt_topic, payload = json.dumps(payload), retain = True)
-
-
 
 
 def Samsung_AC_config(device_id, device_brand):

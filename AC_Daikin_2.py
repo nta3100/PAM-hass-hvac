@@ -11,43 +11,43 @@ def encode_daikin_2(device):
     DAIKIN_ZERO_SPACE_USER = "670"
     state = 1
 
-    if device.swing == 0:
+    if device.swing == "on":
         _swing = 15
-    elif device.swing == 1:
+    elif device.swing == "off":
         _swing = 1
-    elif device.swing == 2:
+    elif device.swing == "off":
         _swing = 2
-    elif device.swing == 3: 
+    elif device.swing == "off": 
         _swing = 3
-    elif device.swing == 4:
+    elif device.swing == "off":
         _swing = 4
-    elif device.swing == 5:
+    elif device.swing == "off":
         _swing = 5
     else:
         _swing = 15
     
-    if device.mode == 1:
+    if device.mode == "heat":
         _mode = 4
-    elif device.mode == 2:
+    elif device.mode == "cool":
         _mode = 3
-    elif device.mode == 3:
+    elif device.mode == "dry":
         _mode = 2
-    elif device.mode == 4:
+    elif device.mode == "fan_only":
         _mode = 6
     else:
         _mode = 4
     
-    if device.fan == 0:
+    if device.fan == "auto":
         _fan = 10
-    elif device.fan == 1:
+    elif device.fan == "1":
         _fan = 3
-    elif device.fan == 2:
+    elif device.fan == "2":
         _fan = 4
-    elif device.fan == 3:
+    elif device.fan == "3":
         _fan = 5
-    elif device.fan == 4:
+    elif device.fan == "4":
         _fan = 6
-    elif device.fan == 5:
+    elif device.fan == "5":
         _fan = 7
     else:
         _fan = 10
@@ -72,7 +72,7 @@ def encode_daikin_2(device):
         _buff = change_swing(_buff, _swing)
     else:
         _buff = switch_on(_buff)
-        _buff = change_mode(_buff)
+        _buff = change_mode(_buff, _mode)
         if _temp == 0:
             _buff = temp_down(_buff)
         elif _temp == 1:
@@ -90,8 +90,8 @@ def encode_daikin_2(device):
     str_raw = ""
     str_bin = ""
     for i in range(0, len(_buff) - 1):
-        str_bin += AC_IR.byte_to_string(_buff[i].tobytes(1, 'big'), 0)
-    str_bin += AC_IR.byte_to_string(cs.tobytes(1, 'big'), 0)
+        str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
+    str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0)
 
     str_raw += DAIKIN_HDR_MARK_USER
     str_raw += ','
@@ -269,6 +269,6 @@ def read_mode(_buff):
 def check_sum(_buf, _add_start, _len):
     _cs = 0x00
     for i in range(_add_start, _len):
-        _cs = _cs + buf[i]
-    _cs = _cs%256
+        _cs = _cs + _buf[i]
+    _cs = _cs % 256
     return _cs

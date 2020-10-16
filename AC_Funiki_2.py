@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_funiki2(device):
@@ -16,37 +14,41 @@ def encode_funiki2(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _swing == 0:
+    if _swing == "auto":
         _swing = 0
-    elif _swing == 1:
+    elif _swing == "1":
         _swing = 1
-    elif _swing == 2:
+    elif _swing == "2":
         _swing = 2
-    elif _swing == 3:
+    elif _swing == "3":
         _swing = 3
-    elif _swing == 4:
+    elif _swing == "3":
         _swing = 4
-    elif _swing == 5:
+    elif _swing == "5":
         _swing = 5
     else:
         _swing = 0
     
-    if _mode == 1:
+    if _mode == "fan_only":
         _mode = 4
-    elif _mode == 2:
+    elif _mode == "heat":
         _mode = 1
-    elif _mode == 3:
+    elif _mode == "dry":
         _mode = 2
-    elif _mode == 4:
+    elif _mode == "dry":
         _mode = 6
+    elif _mode == "cool":
+        _mode = 0
     else: 
-        _mode = 4
+        _mode = 0
 
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 0
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 3
-    elif _fan == 2:
+    elif _fan == "2":
+        _fan = 1
+    elif _fan == "3":
         _fan = 5
     else:
         _fan = 0

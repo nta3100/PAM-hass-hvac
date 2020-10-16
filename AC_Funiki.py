@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_funiki(device):
@@ -15,44 +13,46 @@ def encode_funiki(device):
     _fan = device.fan
     _mode = device.mode
 
-    if  _swing == 0:
+    if  _swing == "auto":
         _swing = 1
-    elif _swing == 1:
+    elif _swing == "1":
         _swing = 2
-    elif _swing == 2:
+    elif _swing == "2":
         _swing = 3
-    elif _swing == 3:
+    elif _swing == "3":
         _swing = 4
-    elif _swing == 4:
+    elif _swing == "4":
         _swing = 5
-    elif _swing == 5:
+    elif _swing == "5":
         _swing = 6
     else:
         _swing = 1
     
-    if _mode == 1:
+    if _mode == "heat":
         _mode = 2
-    elif _mode == 2:
+    elif _mode == "cool":
         _mode = 0
-    elif _mode == 3:
+    elif _mode == "dry":
         _mode = 3
-    elif _mode == 4:
+    elif _mode == "fan_only":
         _mode = 1
     else:
         _mode = 2
     
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 0
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 1
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 2
-    elif _fan == 3:
+    elif _fan == "3":
         _fan = 3
     else:
-        pass
+        _fan = 0
     
     _buff = AC_IR.hex_string_to_byte_array(Funiki_template)
+    if __debug__:
+        print(_buff)
     if device.state == "off":
         _buff = switch_off(_buff)
         _buff = change_mode(_buff, _mode)
@@ -179,6 +179,7 @@ def change_fan(_buff, _fan):
         _buff[0] = _buff[0] | 0x30
     else:
         pass
+    return _buff
 
 def read_fan(_buff):
     _fan = [None] * 3

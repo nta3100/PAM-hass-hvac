@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_general(device):
@@ -18,37 +16,37 @@ def encode_general(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _mode == 0:
+    if _mode == "auto":
         _mode = 0
-    elif _mode == 1:
+    elif _mode == "heat":
         _mode = 4
-    elif _mode == 2:
+    elif _mode == "cool":
         _mode = 1
-    elif _mode == 3:
+    elif _mode == "dry":
         _mode = 2
-    elif _mode == 4:
+    elif _mode == "fan_only":
         _mode = 3
     else:
         pass
 
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 0
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 4
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 3
-    elif _fan == 3:
+    elif _fan == "3":
         _fan = 2
-    elif _fan == 4:
+    elif _fan == "4":
         _fan = 1
     else:
         _fan = 0
 
-    if _swing == 0:
+    if _swing == "set":
         _swing = 0
-    elif _swing == 1:
+    elif _swing == "swing":
         _swing = 1
-    elif _swing == -1:
+    elif _swing == "swing":
         _swing = 2
     else:
         _swing = 2
@@ -95,7 +93,7 @@ def encode_general(device):
             cs = check_sum(_buff, 7, len(_buff) - 1)
             for i in range(0, len(_buff) - 1):
                 str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
-            str_bin += AC_IR.byte_to_string(cs, 0)
+            str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0, signed = True)
             
             str_raw += GENERAL_HDR_MARK_USER
             str_raw += ','
@@ -116,7 +114,7 @@ def encode_general(device):
     else:
         _buff = AC_IR.hex_string_to_byte_array(General_template_state_off)
         for i in range(0, 7):
-            str_bin += AC_IR.byte_to_string(_buff[i], 0)
+            str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
         str_raw += GENERAL_HDR_MARK_USER
         str_raw += ','
         str_raw += GENERAL_HDR_SPACE_USER
@@ -138,9 +136,11 @@ def encode_general(device):
 
 def switch_off(_buff):
     state = 0
+    return _buff
 
 def switch_on(_buff):
     state = 1
+    return _buff
 
 def temp_up(_buff):
     pass
@@ -210,6 +210,7 @@ def change_mode(_buff, _mode):
         _buff[9] = _buff[9] | 0x03
     else:
         pass
+    return _buff
 
 def read_mode(_buff):
     return 0
@@ -217,7 +218,9 @@ def read_mode(_buff):
 def check_sum(_buf, _add_start, _len):
     _cs = 0x00
     for i in range(_add_start, _len):
-        _cs = _cs = _buf[i]
+        _cs = _cs + _buf[i]
     _cs = ~_cs
     _cs = _cs + 1
+    if __debug__:
+        print(_cs)
     return _cs

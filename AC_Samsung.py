@@ -20,24 +20,24 @@ def encode_samsung(device):
 
     if device.mode == "auto":
         _mode = 0
-    elif device.mode == "heat":
-        _mode = 4
-    elif device.mode == "cool":
-        _mode = 1
-    elif device.mode == "dry":
-        _mode = 2
     elif device.mode == "fan_only":
+        _mode = 4
+    elif device.mode == "dry":
+        _mode = 1
+    elif device.mode == "cool":
+        _mode = 2
+    elif device.mode == "heat":
         _mode = 3
     else:
         _mode = 0
 
     if device.fan == "auto":
         _fan = 0
-    elif device.fan == "low":
+    elif device.fan == "1":
         _fan = 2
-    elif device.fan == "medium":
+    elif device.fan == "2":
         _fan = 4
-    elif device.fan == "high":
+    elif device.fan == "3":
         _fan = 5
     else:
         _fan = 0

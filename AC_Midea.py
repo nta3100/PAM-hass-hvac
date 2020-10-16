@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_midea(device):
@@ -18,37 +16,39 @@ def encode_midea(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _fan == 0:
+    if _fan == "auto":
         _fan = 4
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 6
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 10
-    elif _fan == 3:
+    elif _fan == "3":
         _fan = 12
+    elif _fan == "3":
+        _fan = 14
     else:
         _fan = 4
     
-    if _swing == 0:
+    if _swing == "set":
         _swing = 0
-    elif _swing == 1:
+    elif _swing == "swing":
         _swing = 1
-    elif _swing == -1:
+    elif _swing == "swing":
         _swing = 2
     else:
         _swing = 2
     
-    if _mode == 0:
+    if _mode == "auto":
         _mode = 8
         _fan = 14
-    elif _mode == 1:
+    elif _mode == "heat":
         _mode = 12
-    elif _mode == 2:
+    elif _mode == "cool":
         _mode = 0
-    elif _mode == 3:
+    elif _mode == "dry":
         _mode = 4
         _temp = 31
-    elif _mode == 4:
+    elif _mode == "fan_only":
         _mode = 4
         _fan = 14
     else:
@@ -77,7 +77,11 @@ def encode_midea(device):
             _buff = change_fan(_buff, _fan)
     else:
         _buff = AC_IR.hex_string_to_byte_array(Midea_template_state_off)
-    _buff[1] = ~_buff[0]
+    if __debug__:
+        print(_buff[0])
+        print(_buff[3])
+        print(_buff[4])
+    _buff[1] = ~bytes(_buff[0])
     _buff[2] = ~_buff[3]
     _buff[5] = ~_buff[4]  
     

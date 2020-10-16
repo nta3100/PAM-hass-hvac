@@ -1,9 +1,7 @@
-#! /usr/bin/python3
-
 import AC_IR
 
 def encode_asanzo(device):
-    Asanzo_template = ""
+    Asanzo_template = "C38700002000200000200005AF"
     ASANZO_HDR_MARK_USER = "8900"
     ASANZO_HDR_SPACE_USER = "4450"
     ASANZO_BIT_MARK_USER = "520"
@@ -11,33 +9,33 @@ def encode_asanzo(device):
     ASANZO_ZERO_SPACE_USER = "580"
     state = 1
 
-    if device.swing == 0:
+    if device.swing == "on":
         _swing = 7
-    elif device.swing == 1:
+    elif device.swing == "off":
         _swing = 0
     else:
         _swing = 7
     
-    if device.mode == 0:
+    if device.mode == "auto":
         _mode = 0
-    elif device.mode == 1:
+    elif device.mode == "heat":
         _mode = 4
-    elif device.mode == 2:
+    elif device.mode == "dry":
         _mode = 1
-    elif device.mode == 3:
+    elif device.mode == "cool":
         _mode = 2
-    elif device.mode == 4:
+    elif device.mode == "fan_only":
         _mode = 6
     else: 
         _mode = 0
     
-    if device.fan == 0:
+    if device.fan == "auto":
         _fan = 5
-    elif device.fan == 1:
+    elif device.fan == "1":
         _fan = 3
-    elif device.fan == 2:
+    elif device.fan == "2":
         _fan = 2
-    elif device.fan == 3:
+    elif device.fan == "3":
         _fan = 1
     else:
         _fan = 5
@@ -45,6 +43,8 @@ def encode_asanzo(device):
     _temp = (int)(device.temp)
 
     _buff = AC_IR.hex_string_to_byte_array(Asanzo_template)
+    if __debug__:
+        print(_buff)
     if device.mode == "off":
         _buff = switch_off(_buff)
         _buff = change_mode(_buff, _mode)

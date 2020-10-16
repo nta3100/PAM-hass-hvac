@@ -1,7 +1,7 @@
 cMbDcI
-daikin1
+midea
 off
-2
-16
-0
-0
+heat
+20
+1
+auto
