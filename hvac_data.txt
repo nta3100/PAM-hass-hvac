@@ -1,7 +1,7 @@
 cMbDcI
-midea
+general
 off
 heat
 20
-1
 auto
+on

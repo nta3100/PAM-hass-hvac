@@ -1,7 +1,7 @@
 import AC_IR
 
 def encode_panasonic(device):
-    Panasonic_template = ""
+    Panasonic_template = "40040720000000600220E004003930807F00000EE00000810000DD"
     PANASONIC_HDR_MARK_USER = "3500"
     PANASONIC_HDR_SPACE_USER = "1750"
     PANASONIC_BIT_MARK_USER = "435"
@@ -122,11 +122,11 @@ def encode_panasonic(device):
         str_raw += PANASONIC_BIT_MARK_USER
         str_raw += ','
         if str_bin[i] == '1':
-            str_bin += PANASONIC_ONE_SPACE_USER
-            str_bin += ','
+            str_raw += PANASONIC_ONE_SPACE_USER
+            str_raw += ','
         else:
-            str_bin += PANASONIC_ZERO_SPACE_USER
-            str_bin += ','
+            str_raw += PANASONIC_ZERO_SPACE_USER
+            str_raw += ','
     str_raw += PANASONIC_BIT_MARK_USER
     str_raw += ','
     str_raw += "0"
@@ -171,6 +171,7 @@ def change_temp(_buff, _temp):
     __temp = _temp
     _buff[14] = _buff[14] & (~(0x0f << 1))
     _buff[14] = _buff[14] | (__temp << 1)
+    return _buff
 
 def read_temp(_buff):
     _temp = [None] * 4

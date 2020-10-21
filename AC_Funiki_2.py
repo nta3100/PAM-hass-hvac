@@ -98,7 +98,7 @@ def encode_funiki2(device):
     for i in range(0, 8*13):
         str_raw += FUNIKI_2_BIT_MARK_USER
         str_raw += ','
-        if str_bin == '1':
+        if str_bin[i] == '1':
             str_raw += FUNIKI_2_ONE_SPACE_USER
             str_raw += ','
         else:

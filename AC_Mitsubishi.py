@@ -201,6 +201,7 @@ def change_swing(_buff, _swing):
         _buff[8] = _buff[8] | 0x28
     else:
         pass
+    return _buff
 
 def read_swing(_buff):
     _swing = [None] * 3
@@ -225,6 +226,7 @@ def change_mode(_buff, _mode):
         _buff[6] = _buff[6] | 0x03
     else:
         pass
+    return _buff
 
 def read_mode(_buff):
     _mode = [None] * 4
@@ -238,6 +240,6 @@ def read_mode(_buff):
 def check_sum(_buf, _add_start, _len):
     _cs = 0x00
     for i in range(_add_start, _len):
-        _cs = _cs + buf[i]
+        _cs = _cs + _buf[i]
     _cs = _cs % 256
     return _cs

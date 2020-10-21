@@ -37,7 +37,7 @@ def encode_funiki(device):
     elif _mode == "fan_only":
         _mode = 1
     else:
-        _mode = 2
+        _mode = 0
     
     if _fan == "auto":
         _fan = 0
@@ -53,7 +53,7 @@ def encode_funiki(device):
     _buff = AC_IR.hex_string_to_byte_array(Funiki_template)
     if __debug__:
         print(_buff)
-    if device.state == "off":
+    if device.mode == "off":
         _buff = switch_off(_buff)
         _buff = change_mode(_buff, _mode)
         if _temp == 0:
@@ -115,6 +115,7 @@ def encode_funiki(device):
     str_raw += FUNIKI_ONE_SPACE_USER
     str_raw += ','
     str_raw += FUNIKI_BIT_MARK_USER
+    str_raw += ','
     str_raw += "0"
     str_raw = AC_IR.gz_base64_compress(str_raw)
     return str_raw

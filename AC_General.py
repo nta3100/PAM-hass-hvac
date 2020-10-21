@@ -15,6 +15,11 @@ def encode_general(device):
     _swing = device.swing
     _fan = device.fan
     _mode = device.mode
+    if __debug__:
+        print(_temp)
+        print(_swing)
+        print(_fan)
+        print(_mode)
 
     if _mode == "auto":
         _mode = 0
@@ -55,7 +60,7 @@ def encode_general(device):
     str_bin = ""
 
     if device.mode != "off": 
-        if _swing == 1:
+        if _swing == 0:
             _buff = AC_IR.hex_string_to_byte_array(General_template_swing_on)
             for i in range(0,7):
                 str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
@@ -93,7 +98,7 @@ def encode_general(device):
             cs = check_sum(_buff, 7, len(_buff) - 1)
             for i in range(0, len(_buff) - 1):
                 str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
-            str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0, signed = True)
+            str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big', signed = True), 0)
             
             str_raw += GENERAL_HDR_MARK_USER
             str_raw += ','
@@ -156,6 +161,8 @@ def change_temp(_buff, _temp):
     return _buff
 
 def change_fan(_buff, _fan):
+    if __debug__:
+        print(_fan)
     if _fan == 0:
         _buff[10] = _buff[10] & 0xf8
         _buff[10] = _buff[10] | 0x00

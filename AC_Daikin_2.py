@@ -13,15 +13,15 @@ def encode_daikin_2(device):
 
     if device.swing == "on":
         _swing = 15
-    elif device.swing == "off":
+    elif device.swing == "1":
         _swing = 1
-    elif device.swing == "off":
+    elif device.swing == "2":
         _swing = 2
-    elif device.swing == "off": 
+    elif device.swing == "3": 
         _swing = 3
-    elif device.swing == "off":
+    elif device.swing == "4":
         _swing = 4
-    elif device.swing == "off":
+    elif device.swing == "5":
         _swing = 5
     else:
         _swing = 15
@@ -35,7 +35,7 @@ def encode_daikin_2(device):
     elif device.mode == "fan_only":
         _mode = 6
     else:
-        _mode = 4
+        _mode = 3
     
     if device.fan == "auto":
         _fan = 10
@@ -99,35 +99,35 @@ def encode_daikin_2(device):
     str_raw += ','
     for i in range(0, 7*8):
         str_raw += DAIKIN_BIT_MARK_USER
-        str_bin += ','
+        str_raw += ','
         if str_bin[i] == '1':
             str_raw += DAIKIN_ONE_SPACE_USER
             str_raw += ','
         else:
             str_raw += DAIKIN_ZERO_SPACE_USER
             str_raw += ','
+    str_raw += DAIKIN_BIT_MARK_USER
+    str_raw += ','
+    str_raw += "29500"
+    str_raw += ','
+    str_raw += DAIKIN_HDR_MARK_USER
+    str_raw += ','
+    str_raw += DAIKIN_HDR_SPACE_USER
+    str_raw += ','
+    for i in range(7*8, 20*8):
         str_raw += DAIKIN_BIT_MARK_USER
         str_raw += ','
-        str_raw += "29500"
-        str_raw += ','
-        str_raw += DAIKIN_HDR_MARK_USER
-        str_raw += ','
-        str_raw += DAIKIN_HDR_SPACE_USER
-        str_raw += ','
-        for i in range(7*8, 20*8):
-            str_raw += DAIKIN_BIT_MARK_USER
+        if str_bin[i] == '1':
+            str_raw += DAIKIN_ONE_SPACE_USER
             str_raw += ','
-            if str_bin[i] == '1':
-                str_raw += DAIKIN_ONE_SPACE_USER
-                str_raw += ','
-            else:
-                str_bin += DAIKIN_ZERO_SPACE_USER
-                str_bin += ','
-        str_raw += DAIKIN_BIT_MARK_USER
-        str_raw += ','
-        str_raw += "0"
-        str_raw = AC_IR.gz_base64_compress(str_raw)
-        return str_raw
+        else:
+            str_raw += DAIKIN_ZERO_SPACE_USER
+            str_raw += ','
+    str_raw += DAIKIN_BIT_MARK_USER
+    str_raw += ','
+    str_raw += "0"
+    str_raw = AC_IR.gz_base64_compress(str_raw)
+    return str_raw
 
 
 def switch_off(_buff):
@@ -244,7 +244,7 @@ def read_swing(_buff):
 def change_mode(_buff, _mode):
     if _mode == 2:
         _buff[12] = _buff[12] & 0x8f
-        _buff[12] = _buff[12] | 0x02
+        _buff[12] = _buff[12] | 0x20
     elif _mode == 3:
         _buff[12] = _buff[12] & 0x8f
         _buff[12] = _buff[12] | 0x30

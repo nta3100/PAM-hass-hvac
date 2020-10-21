@@ -4,7 +4,7 @@ def encode_midea(device):
     Midea_template_state_on = "B24D3FC040BF"
     Midea_template_state_off = "B24D7B84E01F"
     Midea_template_swing_on = "B24D6B94E01F"
-    Midea_template_swing_set = "B24D6B94E01F"
+    Midea_template_swing_set = "B24D0FF0E01F"
     MIDEA_HDR_MARK_USER = "4350"
     MIDEA_HDR_SPACE_USER = "4350"
     MIDEA_BIT_MARK_USER = "550"
@@ -40,20 +40,16 @@ def encode_midea(device):
     
     if _mode == "auto":
         _mode = 8
-        _fan = 14
     elif _mode == "heat":
         _mode = 12
     elif _mode == "cool":
         _mode = 0
     elif _mode == "dry":
         _mode = 4
-        _temp = 31
     elif _mode == "fan_only":
         _mode = 4
-        _fan = 14
     else:
         _mode = 8
-        _fan = 14
     
     if device.mode != "off":
         if _swing == 0:
@@ -78,12 +74,12 @@ def encode_midea(device):
     else:
         _buff = AC_IR.hex_string_to_byte_array(Midea_template_state_off)
     if __debug__:
-        print(_buff[0])
-        print(_buff[3])
-        print(_buff[4])
-    _buff[1] = ~bytes(_buff[0])
-    _buff[2] = ~_buff[3]
-    _buff[5] = ~_buff[4]  
+        print(~_buff[0])
+        print(~_buff[3])
+        print(~_buff[4])
+    _buff[1] = _buff[0] ^ 0xff
+    _buff[2] = _buff[3] ^ 0xff
+    _buff[5] = _buff[4] ^ 0xff  
     
     str_raw = ""
     str_bin = ""
@@ -133,15 +129,19 @@ def encode_midea(device):
 
 def switch_off(_buff):
     state = 0
+    return _buff
 
 def switch_on(_buff):
     state = 1
+    return _buff
 
 def temp_up(_buff):
     pass
+    return _buff
 
 def temp_down(_buff):
     pass
+    return _buff
 
 def change_temp(_buff, _temp):
     if _temp == 17:
@@ -191,6 +191,7 @@ def change_temp(_buff, _temp):
         _buff[4] = _buff[4] | 0xe0
     else: 
         pass
+    return _buff
 
 def read_temp(_buff):
     return 0
@@ -213,12 +214,13 @@ def change_fan(_buff, _fan):
         _buff[3] = _buff[3] | 0xe0
     else:
         pass
+    return _buff
 
 def read_fan(_buff):
     return 0
 
 def change_swing(_buff, _swing):
-    pass
+    return _buff
 
 def read_swing(_buff, _swing):
     pass
@@ -238,6 +240,7 @@ def change_mode(_buff, _mode):
         _buff[4] = _buff[4] | 0x04
     else:
         pass
+    return _buff
 
 def read_mode(_buff):
     return 0

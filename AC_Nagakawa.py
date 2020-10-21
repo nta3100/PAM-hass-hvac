@@ -143,11 +143,12 @@ def temp_down(_buff):
             _buff[7] = _buff[7] + 1
     return _buff
 
-def change_temp(_buff):
+def change_temp(_buff, _temp):
     _temp = 31 - _temp
     __temp = _temp
     _buff[7] = _buff[7] & 0xf0
     _buff[7] = _buff[7] | __temp
+    return _buff
 
 def read_temp(_buff):
     _temp = [None] * 4

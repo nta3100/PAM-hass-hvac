@@ -32,6 +32,8 @@ def encode_gree(device):
         _mode = 3
     else:
         _mode = 0
+    if __debug__:
+        print(_mode)
 
     if _fan == "auto":
         _fan = 0
@@ -59,7 +61,7 @@ def encode_gree(device):
         else:
             pass
         _buff = change_fan(_buff, _fan)
-        _buff = change_swing(_buff, _fan)
+        _buff = change_swing(_buff, _swing)
     else:
         _buff = switch_on(_buff)
         _buff = change_mode(_buff, _mode)
@@ -74,13 +76,13 @@ def encode_gree(device):
         else:
             pass
         _buff = change_fan(_buff, _fan)
-        _buff = change_swing(_buff, _fan)
+        _buff = change_swing(_buff, _swing)
     
     str_raw = ""
     str_bin = ""
     for i in range(0, len(_buff)):
         str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
-    str_raw += GREE_BIT_MARK_USER
+    str_raw += GREE_HDR_MARK_USER
     str_raw += ','
     str_raw += GREE_HDR_SPACE_USER
     str_raw += ','
@@ -184,7 +186,7 @@ def read_fan(_buff):
 def change_swing(_buff, _swing):
     if _swing == 4:
         _buff[0] = _buff[0] & 0xbf
-        _buff[0] = _buff[0] | 0x00
+        _buff[0] = _buff[0] | 0x40
     elif _swing == 0:
         _buff[0] = _buff[0] & 0xbf
         _buff[0] = _buff[0] | 0x00

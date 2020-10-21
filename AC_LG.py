@@ -36,12 +36,7 @@ def encode_lg(device):
     else:
         _fan = 5
     
-    if _swing == 0:
-        _swing = 0
-    elif _swing == -1:
-        _swing = 1
-    else:
-        _swing = 1
+    _swing = 1
 
     _buff = AC_IR.hex_string_to_byte_array(LG_template_on)
     if device.mode == "off":

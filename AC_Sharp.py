@@ -1,7 +1,7 @@
 import AC_IR
 
 def encode_sharp(device):
-    Sharp_template = ""
+    Sharp_template = "AA5ACF1007317200088000F031"
     SHARP_HDR_MARK_USER ="3830"
     SHARP_HDR_SPACE_USER = "1820"
     SHARP_BIT_MARK_USER = "520"
@@ -14,27 +14,106 @@ def encode_sharp(device):
     _fan = device.fan
     _mode = device.mode
 
-    if _fan == 0:
+    if _mode == "auto":
+        _mode = 0
+    elif _mode == "dry":
+        _mode = 3
+    elif _mode == "cool":
+        _mode = 2
+    elif _mode == "heat":
+        _mode = 1
+    elif _mode == "fan":
+        _mode = 4
+    else:
+        pass
+
+    if _fan == "auto":
         _fan = 2
-    elif _fan == 1:
+    elif _fan == "1":
         _fan = 3
-    elif _fan == 2:
+    elif _fan == "2":
         _fan = 5
-    elif _fan == 3:
+    elif _fan == "3":
         _fan =7
     
-    if _swing == 0:
+    if _swing == "swing":   #change
         _swing = 7
-    elif _swing == -1:
+    elif _swing == "set":   #unchange
         _swing = 1
     else:
         _swing = 1
     
     _buff = AC_IR.hex_string_to_byte_array(Sharp_template)
-
-
-
-
+    if _mode == "off":
+        _buff = switch_off(_buff)
+        _buff = change_mode(_buff, _mode)
+        if _temp == 0:
+            _buff = temp_down(_buff)
+        elif _temp == 1:
+            _buff = temp_up(_buff)
+        elif _temp == 2:
+            pass
+        elif (_temp > 17) and (_temp < 33):
+            _buff = change_temp(_buff, _temp)
+        else:
+            pass
+        _buff = change_fan(_buff, _fan)
+        _buff = change_swing(_buff, _swing)
+    elif True:
+        _buff = switch_on(_buff)
+        _buff = change_mode(_buff, _mode)
+        if _temp == 0:
+            _buff = temp_down(_buff)
+        elif _temp == 1:
+            _buff = temp_up(_buff)
+        elif _temp == 2:
+            pass
+        elif (_temp > 17) and (_temp < 33):
+            _buff = change_temp(_buff, _temp)
+        else:
+            pass
+        _buff = change_fan(_buff, _fan)
+        _buff = change_swing(_buff, _swing)
+    else:
+        _buff = switch_active(_buff)
+        _buff = change_mode(_buff, _mode)
+        if _temp == 0:
+            _buff = temp_down(_buff)
+        elif _temp == 1:
+            _buff = temp_up(_buff)
+        elif _temp == 2:
+            pass
+        elif (_temp > 17) and (_temp < 33):
+            _buff = change_temp(_buff, _temp)
+        else:
+            pass
+        _buff = change_fan(_buff, _fan)
+        _buff = change_swing(_buff, _swing)
+    cs = check_sum(_buff, 0, 12)
+    str_raw = ""
+    str_bin = ""
+    for i in range(0, len(_buff) - 1):
+        str_bin += AC_IR.byte_to_string(_buff[i].to_bytes(1, 'big'), 0)
+    str_bin += AC_IR.byte_to_string(cs.to_bytes(1, 'big'), 0)
+    
+    str_raw += SHARP_HDR_MARK_USER
+    str_raw += ','
+    str_raw += SHARP_HDR_SPACE_USER
+    str_raw += ','
+    for i in range(0, 13*8):
+        str_raw += SHARP_BIT_MARK_USER
+        str_raw += ','
+        if str_bin[i] == '1':
+            str_raw += SHARP_ONE_SPACE_USER
+            str_raw += ','
+        else:
+            str_raw += SHARP_ZERO_SPACE_USER
+            str_raw += ','
+    str_raw += SHARP_BIT_MARK_USER
+    str_raw += ','
+    str_raw += "0"
+    str_raw = AC_IR.gz_base64_compress(str_raw)
+    return str_raw
 
 def switch_off(_buff):
     _buff[5] = _buff[5] & 0xcf
@@ -94,13 +173,13 @@ def change_fan(_buff, _fan):
         _buff[6] = _buff[6] | 0x20
     elif _fan == 3:
         _buff[6] = _buff[6] & 0x8f
-        _buff[6] = _buff[6] & 0x30
+        _buff[6] = _buff[6] | 0x30
     elif _fan == 5:
         _buff[6] = _buff[6] & 0x8f
-        _buff[6] = _buff[6] & 0x50
+        _buff[6] = _buff[6] | 0x50
     elif _fan == 7:
         _buff[6] = _buff[6] & 0x8f
-        _buff[6] = _buff[6] & 0x70
+        _buff[6] = _buff[6] | 0x70
     else:
         pass
     return _buff

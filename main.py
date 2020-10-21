@@ -80,17 +80,7 @@ def mqtt_decode(topic, payload):
         for device in devices:
             if device_id.decode('utf-8') == device.device_id:
                 device.brand = new_brand.decode('utf-8').lower()
-                if new_brand.decode('utf-8') == "Samsung":
-                    Samsung_AC_config(device.device_id, device.brand)
-                    device.mode = "Auto"
-                    device.fan = "Auto"
-                    device.swing = "On"
-                elif new_brand.decode('utf-8') == "Sumikura":
-                    Sumikura_AC_config(device.device_id, device.brand)
-                    device.mode = "Cool"
-                    device.fan = "Auto"
-                    device.swing = "Auto"
-                break
+                new_config(device_id = device.device_id, device_brand = device.brand)
     elif check_ == "clima":
         #topic: climate/device_id/change_in
         #payload: 
@@ -184,7 +174,6 @@ def new_config(device_id, device_brand):
         min_temp = "16"
         fan_modes = ["Auto", "1", "2", "3"]
         swing_modes = ["Auto", "1", "2", "3", "4", "5"]
-
     elif device_brand == "daikin1":
         modes = ["off", "auto", "heat", "cool", "dry", "fan_only"]
         max_temp = "32"
@@ -257,6 +246,8 @@ def new_config(device_id, device_brand):
         min_temp = "18"
         fan_modes = ["Auto", "1", "2", "3"]
         swing_modes = ["Swing"]
+    else:
+        return 0
 
     payload = {"name": name, "availability_topic": status, 
         "mode_command_topic": mode_cmd, "temperature_command_topic": temp_cmd, 

@@ -49,10 +49,10 @@ def encode_samsung(device):
     _buff_on = AC_IR.hex_string_to_byte_array(samsung_template_on)
     _buff_off = AC_IR.hex_string_to_byte_array(samsung_template_off)
 
-    if (device.mode == "off"):
-        switch_off(_buff_off)
-        str_bin = AC_IR.byte_to_string(_buff_off, 0) 
-        print(str_bin)
+    if device.mode == "off":
+        _buff_off = switch_off(_buff_off)
+        for i in range(0, len(_buff_off)):
+            str_bin += AC_IR.byte_to_string(_buff_off[i].to_bytes(1, 'big'), 0)
         str_raw += SAMSUNG_HDR_MARK_USER
         str_raw += ','
         str_raw += SAMSUNG_HDR_SPACE_USER
@@ -104,7 +104,7 @@ def encode_samsung(device):
         str_raw += ','
         str_raw += "0"
     else:
-        switch_on(_buff_on)
+        _buff_on = switch_on(_buff_on)
         _buff_on = change_mode(_buff_on, _mode)
         if (int)(device.temp) == 0:
             _buff_on = temp_down(_buff_on)
@@ -189,9 +189,11 @@ def encode_samsung(device):
 #AC_Samsung.java
 def switch_on(_buff):
     state = 1
+    return _buff
 
 def switch_off(_buff):
     state = 0
+    return _buff
 
 def read_temp(_buff):
     _temp = []
